@@ -68,21 +68,21 @@ fun setTime(context: Context,hour: Int, minute:Int, message: String)
         putExtra(AlarmClock.EXTRA_HOUR,hour)
         putExtra(AlarmClock.EXTRA_MINUTES,minute)
         putExtra(AlarmClock.EXTRA_MESSAGE,message)
-        putExtra(AlarmClock.EXTRA_SKIP_UI, true)
+        //putExtra(AlarmClock.EXTRA_SKIP_UI, true)
     }
     //intent.resolveActivity(context.packageManager)
-    context.startActivity(intent)
-    Toast.makeText(context, "Alarm set for $hour:$minute", Toast.LENGTH_SHORT).show()
+//    context.startActivity(intent)
+//    Toast.makeText(context, "Alarm set for $hour:$minute", Toast.LENGTH_SHORT).show()
 //    Log.d("AlarmDebug", "Hour: $hour, Minute: $minute")
 //    Log.d("IntentDebug",intent.toString())
 //    val alarmApp = intent.resolveActivity(context.packageManager)
 //    Log.d("AlarmDebug", "Resolved Activity: $alarmApp")
-//    if (intent.resolveActivity(context.packageManager) != null) {
-//        context.startActivity(intent)
-//        Toast.makeText(context, "Alarm set for $hour:$minute", Toast.LENGTH_SHORT).show()
-//    } else {
-//        Toast.makeText(context, "No alarm app available", Toast.LENGTH_SHORT).show()
-//    }
+    if (intent.resolveActivity(context.packageManager) == null) {
+        context.startActivity(intent)
+        Toast.makeText(context, "Alarm set for $hour:$minute", Toast.LENGTH_SHORT).show()
+    } else {
+        Toast.makeText(context, "No alarm app available", Toast.LENGTH_SHORT).show()
+    }
 //    val intent = Intent(Intent.ACTION_VIEW,Uri.parse("https://google.com"))
 //    context.startActivity(intent)
 }
