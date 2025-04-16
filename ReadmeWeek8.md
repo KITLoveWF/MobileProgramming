@@ -155,7 +155,7 @@ class ImageLoader(
 }
 ```
 ### **Service**
-```xml
+```sh
 
 class ImageLoaderHelper(private val activity: ComponentActivity) :
     LoaderManager.LoaderCallbacks<String> {
@@ -194,7 +194,7 @@ class ImageLoaderHelper(private val activity: ComponentActivity) :
 }
 ```
 ### **Notifications**
-```xml
+```sh
 class ImageLoaderService : Service() {
 
     private val handler = Handler()
