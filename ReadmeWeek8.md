@@ -30,8 +30,8 @@ This Android application demonstrates the use of asynchronous processing and sys
 Ensure the following permissions and dependencies are set in your app:
 
 ### **AndroidManifest.xml**
-
 ```xml
+
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
@@ -70,47 +70,4 @@ Ensure the following permissions and dependencies are set in your app:
     </application>
 
 </manifest>
-``` AsyncTask
 
-class ImageLoaderTask(
-    private val context: Context,
-    private val onResult: (String) ->Unit,
-    private val onUrlLoaded: (String) -> Unit
-) : AsyncTask<String,Void, String>(){
-    override fun onPreExecute() {
-        onResult("Loading...")
-
-        super.onPreExecute()
-    }
-
-    override fun doInBackground(vararg params: String?): String {
-
-        return try {
-            val urlString = params.getOrNull(0) ?: return "Default value"
-            val url = URL(urlString)
-            val connection = url.openConnection() as HttpURLConnection
-            connection.doInput = true
-            connection.connect()
-            val input: InputStream = connection.inputStream
-            val bitmap = BitmapFactory.decodeStream(input)
-
-            if (bitmap != null) urlString else "Default value"
-        } catch (e: Exception) {
-            e.printStackTrace()
-            "Default value"
-        }
-    }
-
-    override fun onPostExecute(result: String) {
-        super.onPostExecute(result)
-        if(result != "Default value")
-        {
-            onUrlLoaded(result)
-            onResult("Image loaded successfully")
-        }
-        else{
-            onResult("Failed to load image")
-        }
-    }
-
-}
