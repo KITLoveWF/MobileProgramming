@@ -32,15 +32,85 @@ Ensure the following permissions and dependencies are set in your app:
 ### **AndroidManifest.xml**
 
 ```xml
-<uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-<application
-    ... >
-    
-    <!-- Register BroadcastReceiver -->
-    <receiver android:name=".MyBroadcastReceiver" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- Register Service -->
-    <service android:name=".MyService" android:exported="false" />
-</application>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.ImageLoadProject2"
+        tools:targetApi="31">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.ImageLoadProject2">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <service
+            android:name=".ImageLoaderService"
+            android:enabled="true"
+            android:exported="false" />
+    </application>
+
+</manifest>
+``` AsyncTask
+
+class ImageLoaderTask(
+    private val context: Context,
+    private val onResult: (String) ->Unit,
+    private val onUrlLoaded: (String) -> Unit
+) : AsyncTask<String,Void, String>(){
+    override fun onPreExecute() {
+        onResult("Loading...")
+
+        super.onPreExecute()
+    }
+
+    override fun doInBackground(vararg params: String?): String {
+
+        return try {
+            val urlString = params.getOrNull(0) ?: return "Default value"
+            val url = URL(urlString)
+            val connection = url.openConnection() as HttpURLConnection
+            connection.doInput = true
+            connection.connect()
+            val input: InputStream = connection.inputStream
+            val bitmap = BitmapFactory.decodeStream(input)
+
+            if (bitmap != null) urlString else "Default value"
+        } catch (e: Exception) {
+            e.printStackTrace()
+            "Default value"
+        }
+    }
+
+    override fun onPostExecute(result: String) {
+        super.onPostExecute(result)
+        if(result != "Default value")
+        {
+            onUrlLoaded(result)
+            onResult("Image loaded successfully")
+        }
+        else{
+            onResult("Failed to load image")
+        }
+    }
+
+}
